@@ -2,11 +2,31 @@ import urllib.request
 from bs4 import BeautifulSoup
 from uszipcode import SearchEngine
 import zipcodes
+import config
 from darksky.api import DarkSky
 from darksky.types import languages, units, weather
 
-# Code used to locate temperature
 
+darksky = DarkSky(config.api_key)
+
+#User Input Zip Code, Uses Dark Sky API
+def read_forecast():
+    zip_code = input("Please enter your zip code: ")
+    while (not zipcodes.is_real(zip_code)):
+        print("Invalid Zip Code. Please Try Again.")
+        input("Please enter your zip code: ")
+    lat,long = find_lat_long(zip_code)
+    forecast = darksky.get_forecast(lat, long)
+    print(forecast.daily.data[0].precip_probability)
+    return forecast
+
+# Requires Valid Zip Code (string)
+def find_lat_long(zip_code):
+    search = SearchEngine(simple_zipcode=True)
+    zipcode_data = search.by_zipcode(zip_code)
+    zipcode_dict_data = zipcode_data.to_dict();
+    latitude, longitude = zipcode_dict_data['lat'],zipcode_dict_data['lng']
+    return latitude, longitude
 
 # Given a place from Weather.com looks for temperature
 # URL should be a string
@@ -39,33 +59,5 @@ def read_temp_with_url(url_input):
 
     return current_temp, feels_like_temp
 
-#User Input Zip Code, Uses Dark Sky API
-def read_temp():
-    zip_code = input("Please enter your zip code: ")
-    while (not zipcodes.is_real(zip_code)):
-        print("Invalid Zip Code. Please Try Again.")
-        input("Please enter your zip code: ")
-    lat,long = find_lat_long(zip_code)
-
-
-
-
-
-# Requires Valid Zip Code (string)
-def find_lat_long(zip_code):
-    search = SearchEngine(simple_zipcode=True)
-    zipcode_data = search.by_zipcode(zip_code)
-    zipcode_dict_data = zipcode_data.to_dict();
-    latitude, longitude = zipcode_dict_data['lat'],zipcode_dict_data['lng']
-    return latitude, longitude
-
-
-
-print(read_temp_with_url("https://weather.com/weather/today/l/48104:4:US"))
-print(find_lat_long("10001"))
-read_temp()
-
-
-
-
+read_forecast()
 
