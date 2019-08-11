@@ -11,13 +11,14 @@ darksky = DarkSky(config.api_key)
 
 #User Input Zip Code, Uses Dark Sky API
 def read_forecast():
+    print("hello")
     zip_code = input("Please enter your zip code: ")
     while (not zipcodes.is_real(zip_code)):
         print("Invalid Zip Code. Please Try Again.")
         input("Please enter your zip code: ")
     lat,long = find_lat_long(zip_code)
     forecast = darksky.get_forecast(lat, long)
-    print(forecast.daily.data[0].precip_probability)
+    print(forecast.hourly.data[0].precip_type)
     return forecast
 
 # Requires Valid Zip Code (string)
@@ -60,4 +61,3 @@ def read_temp_with_url(url_input):
     return current_temp, feels_like_temp
 
 read_forecast()
-
