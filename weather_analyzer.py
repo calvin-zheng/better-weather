@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 class Daily_Weather(object):
     def __init__(self,forecast): #from forecast_data
@@ -11,8 +11,9 @@ class Daily_Weather(object):
         #goes through the next 12 hours, adding relevant data points in regards to the type of precip
         #only precip probability greater than 20% is considered
         for i in range(0,12):
-            if(self.forecast.hourly.data[0].precip_probability >= 0.2):
-                self.precipTypes[self.forecast.hourly.data[0].precip_type].append(self.currentHour + i)
+            if(self.forecast.hourly.data[i].precip_probability >= 0.2):
+                self.precipTypes[self.forecast.hourly.data[i].precip_type].append(self.currentHour + i)
+                #print(i)
 
     def getPrecipTimes(self, precipType):
         return self.precipTypes[precipType]
